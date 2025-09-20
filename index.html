@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enigma Espacial</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      font-family: "Courier New", monospace;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    input {
+      padding: 10px;
+      border: 2px solid #444;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      background: #111;
+      color: #fff;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      background: #ff0000;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #aa0000;
+    }
+    #mensagem {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #0f0;
+      position: relative;
+      z-index: 2;
+    }
+    #container {
+      max-width: 90%;
+      position: relative;
+      z-index: 2;
+    }
+    #sol-img {
+      max-width: 80%;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 30px #ffcc00;
+      display: block;
+    }
+    #morse-hidden {
+      position: absolute;
+      bottom: 5%; 
+      right: 5%;
+      color: rgba(255,255,255,0.15); /* quase imperceptível */
+      font-size: 0.9em;
+      line-height: 1.2em;
+      white-space: pre-wrap;
+      pointer-events: none;
+      z-index: 1;
+      display: none; /* escondido por padrão */
+    }
+    #morse-input-container {
+      display: none; /* apareça depois de 20 segundos */
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Container principal -->
+  <div id="container">
+    <p id="pergunta">Qual foi o primeiro satélite artificial lançado?</p>
+    <input type="text" id="resposta" placeholder="Digite sua resposta...">
+    <button onclick="verificar()">Enviar</button>
+    <div id="mensagem"></div>
+  </div>
+
+  <!-- Código Morse escondido, só aparece na fase 3 -->
+  <div id="morse-hidden">
+    -. ã --- / .-.. . ...- . / .. ... ... --- / .- / ... . .-. .. --- --..-- 
+    / .. ... ... --- / .--. --- .-. / . --.- ..- .- -. - --- / . / ..- -- / - . ... - . 
+    --..-- / . -..- .--. . .-. .. -- . -. - --- / -. ..- -- . .-. --- / .---- -.-.--
+  </div>
+
+  <!-- Input para digitar Morse, só aparece depois de 20s na fase 3 -->
+  <div id="morse-input-container">
+    <p>Digite o que estava escrito no código Morse:</p>
+    <input type="text" id="morse-input" placeholder="Digite aqui...">
+    <button onclick="verificarMorse()">Enviar</button>
+    <div id="morse-mensagem"></div>
+  </div>
+
+  <script>
+    let fase = 1;
+
+    function verificar() {
+      const resposta = document.getElementById("resposta").value.toLowerCase().trim();
+      const mensagem = document.getElementById("mensagem");
+      const container = document.getElementById("container");
+      const morse = document.getElementById("morse-hidden");
+      const morseInputContainer = document.getElementById("morse-input-container");
+
+      if (fase === 1 && resposta === "sputnik-1") {
+        fase = 2;
+        document.getElementById("pergunta").innerText = 
+          "Qual o planeta que é composto principalmente por hidrogênio e hélio?";
+        document.getElementById("resposta").value = "";
+        mensagem.innerText = "✅ Correto! Avançando...";
+      } 
+      else if (fase === 2 && resposta === "júpiter") { 
+        fase = 3;
+        // Fase 3: imagem do Sol com frase visível
+        container.innerHTML = `
+          <p>Às vezes a escuridão esconde coisas e o brilho pode mostrar o que está escondido nela.</p>
+          <img id="sol-img" src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Solar_sys8.jpg" alt="Sol">
+        `;
+        // Mostrar o Morse semi-transparente
+        morse.style.display = "block";
+
+        // Depois de 20 segundos, mostrar input para digitar Morse
+        setTimeout(() => {
+          morseInputContainer.style.display = "block";
+        }, 20000); // 20 segundos
+      } 
+      else {
+        mensagem.innerText = "❌ Errado. Tente novamente.";
+      }
+    }
+
+    function verificarMorse() {
+      const input = document.getElementById("morse-input").value.toLowerCase().trim();
+      const mensagem = document.getElementById("morse-mensagem");
+      const respostaCorreta = "não leve isso a sério, isso por enquanto é um teste, experimento número 1!";
+
+      if (input === respostaCorreta.toLowerCase()) {
+        mensagem.innerText = "✅ Correto! Você decifrou o código Morse!";
+      } else {
+        mensagem.innerText = "❌ Errado. Tente novamente.";
+      }
+    }
+  </script>
+</body>
+</html>
